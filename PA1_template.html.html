@@ -1,0 +1,276 @@
+<html>
+
+<head>
+<style type="text/css">
+.inline {
+  background-color: #f7f7f7;
+  border:solid 1px #B0B0B0;
+}
+.error {
+	font-weight: bold;
+	color: #FF0000;
+}
+.warning {
+	font-weight: bold;
+}
+.message {
+	font-style: italic;
+}
+.source, .output, .warning, .error, .message {
+	padding: 0 1em;
+  border:solid 1px #F7F7F7;
+}
+.source {
+  background-color: #f5f5f5;
+}
+.left {
+  text-align: left;
+}
+.right {
+  text-align: right;
+}
+.center {
+  text-align: center;
+}
+.hl.num {
+  color: #AF0F91;
+}
+.hl.str {
+  color: #317ECC;
+}
+.hl.com {
+  color: #AD95AF;
+  font-style: italic;
+}
+.hl.opt {
+  color: #000000;
+}
+.hl.std {
+  color: #585858;
+}
+.hl.kwa {
+  color: #295F94;
+  font-weight: bold;
+}
+.hl.kwb {
+  color: #B05A65;
+}
+.hl.kwc {
+  color: #55aa55;
+}
+.hl.kwd {
+  color: #BC5A65;
+  font-weight: bold;
+}
+</style>Coursera Data Science Courses Projects
+<title>Reproducible Research Week 2 Project</title>
+</head>
+
+<body>
+
+<p>This is an R HTML document. When you click the <b>Knit HTML</b> button a web page will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:</p>
+
+<p>Loading and preprocessing the data</p>
+
+<div class="chunk" id="unnamed-chunk-1"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl kwd">unzip</span><span class="hl std">(</span><span class="hl str">&quot;activity.zip&quot;</span><span class="hl std">)</span>
+</pre></div>
+<div class="warning"><pre class="knitr r">## Warning in unzip(&quot;activity.zip&quot;): error 1 in extracting from zip file
+</pre></div>
+<div class="source"><pre class="knitr r"><span class="hl std">stepdata</span> <span class="hl kwb">&lt;-</span> <span class="hl kwd">read.csv</span><span class="hl std">(</span><span class="hl str">&quot;activity.csv&quot;</span><span class="hl std">,</span> <span class="hl kwc">header</span> <span class="hl std">=</span> <span class="hl num">TRUE</span><span class="hl std">)</span>
+<span class="hl kwd">head</span><span class="hl std">(stepdata)</span>
+</pre></div>
+<div class="output"><pre class="knitr r">##   steps       date interval
+## 1    NA 2012-10-01        0
+## 2    NA 2012-10-01        5
+## 3    NA 2012-10-01       10
+## 4    NA 2012-10-01       15
+## 5    NA 2012-10-01       20
+## 6    NA 2012-10-01       25
+</pre></div>
+</div></div>
+
+<p>1. Calculate total number of steps taken each day</p>
+
+<div class="chunk" id="unnamed-chunk-2"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl kwd">library</span><span class="hl std">(magrittr)</span>
+<span class="hl kwd">library</span><span class="hl std">(dplyr)</span>
+</pre></div>
+<div class="warning"><pre class="knitr r">## Warning: package 'dplyr' was built under R version 4.0.2
+</pre></div>
+<div class="message"><pre class="knitr r">## 
+## Attaching package: 'dplyr'
+</pre></div>
+<div class="message"><pre class="knitr r">## The following objects are masked from 'package:stats':
+## 
+##     filter, lag
+</pre></div>
+<div class="message"><pre class="knitr r">## The following objects are masked from 'package:base':
+## 
+##     intersect, setdiff, setequal, union
+</pre></div>
+<div class="source"><pre class="knitr r"><span class="hl std">databydate</span> <span class="hl kwb">&lt;-</span> <span class="hl std">stepdata</span> <span class="hl opt">%&gt;%</span> <span class="hl kwd">select</span><span class="hl std">(date, steps)</span> <span class="hl opt">%&gt;%</span> <span class="hl kwd">group_by</span><span class="hl std">(date)</span> <span class="hl opt">%&gt;%</span> <span class="hl kwd">summarize</span><span class="hl std">(</span><span class="hl kwc">tsteps</span><span class="hl std">=</span> <span class="hl kwd">sum</span><span class="hl std">(steps))</span> <span class="hl opt">%&gt;%</span><span class="hl kwd">na.omit</span><span class="hl std">()</span>
+</pre></div>
+<div class="message"><pre class="knitr r">## `summarise()` ungrouping output (override with `.groups` argument)
+</pre></div>
+<div class="source"><pre class="knitr r"><span class="hl kwd">hist</span><span class="hl std">(databydate</span><span class="hl opt">$</span><span class="hl std">tsteps,</span> <span class="hl kwc">xlab</span> <span class="hl std">=</span> <span class="hl str">&quot;Total daily Steps&quot;</span><span class="hl std">,</span><span class="hl kwc">main</span><span class="hl std">=</span><span class="hl str">&quot;Histogram of Total Steps by day&quot;</span><span class="hl std">,</span> <span class="hl kwc">breaks</span> <span class="hl std">=</span> <span class="hl num">20</span><span class="hl std">)</span>
+</pre></div>
+</div><div class="rimage default"><img src="figure/unnamed-chunk-2-1.png" title="plot of chunk unnamed-chunk-2" alt="plot of chunk unnamed-chunk-2" class="plot" /></div></div>
+
+
+<p>2. Calculate and report the mean and median of the total number of steps taken per day</p>
+
+<div class="chunk" id="unnamed-chunk-3"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl kwd">mean</span><span class="hl std">(databydate</span><span class="hl opt">$</span><span class="hl std">tsteps)</span>
+</pre></div>
+<div class="output"><pre class="knitr r">## [1] 10766.19
+</pre></div>
+<div class="source"><pre class="knitr r"><span class="hl kwd">median</span><span class="hl std">(databydate</span><span class="hl opt">$</span><span class="hl std">tsteps)</span>
+</pre></div>
+<div class="output"><pre class="knitr r">## [1] 10765
+</pre></div>
+</div></div>
+
+<p>4. Time series plot</p>
+
+<div class="chunk" id="unnamed-chunk-4"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl kwd">library</span><span class="hl std">(ggplot2)</span>
+</pre></div>
+<div class="warning"><pre class="knitr r">## Warning: package 'ggplot2' was built under R version 4.0.2
+</pre></div>
+<div class="source"><pre class="knitr r"><span class="hl std">databyinterval</span> <span class="hl kwb">&lt;-</span> <span class="hl std">stepdata</span><span class="hl opt">%&gt;%</span> <span class="hl kwd">select</span><span class="hl std">(interval, steps)</span> <span class="hl opt">%&gt;%</span> <span class="hl kwd">na.omit</span><span class="hl std">()</span> <span class="hl opt">%&gt;%</span> <span class="hl kwd">group_by</span><span class="hl std">(interval)</span> <span class="hl opt">%&gt;%</span> <span class="hl kwd">summarize</span><span class="hl std">(</span><span class="hl kwc">tsteps</span><span class="hl std">=</span> <span class="hl kwd">mean</span><span class="hl std">(steps))</span>
+</pre></div>
+<div class="message"><pre class="knitr r">## `summarise()` ungrouping output (override with `.groups` argument)
+</pre></div>
+<div class="source"><pre class="knitr r"><span class="hl kwd">ggplot</span><span class="hl std">(databyinterval,</span> <span class="hl kwd">aes</span><span class="hl std">(</span><span class="hl kwc">x</span><span class="hl std">=interval,</span> <span class="hl kwc">y</span><span class="hl std">=tsteps))</span><span class="hl opt">+</span> <span class="hl kwd">geom_line</span><span class="hl std">()</span>
+</pre></div>
+</div><div class="rimage default"><img src="figure/unnamed-chunk-4-1.png" title="plot of chunk unnamed-chunk-4" alt="plot of chunk unnamed-chunk-4" class="plot" /></div></div>
+
+
+<p>5.The 5-minute interval that, on average, contains the maximum number of steps</p>
+
+<div class="chunk" id="unnamed-chunk-5"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl std">databyinterval[</span><span class="hl kwd">which</span><span class="hl std">(databyinterval</span><span class="hl opt">$</span><span class="hl std">tsteps</span><span class="hl opt">==</span> <span class="hl kwd">max</span><span class="hl std">(databyinterval</span><span class="hl opt">$</span><span class="hl std">tsteps)),]</span>
+</pre></div>
+<div class="output"><pre class="knitr r">## # A tibble: 1 x 2
+##   interval tsteps
+##      &lt;int&gt;  &lt;dbl&gt;
+## 1      835   206.
+</pre></div>
+</div></div>
+
+<p>1. Calculate and report the total number of missing values in the dataset (i.e. the total number of rows with NAs)</p>
+
+<div class="chunk" id="unnamed-chunk-6"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl std">missingVals</span> <span class="hl kwb">&lt;-</span> <span class="hl kwd">sum</span><span class="hl std">(</span><span class="hl kwd">is.na</span><span class="hl std">(data))</span>
+</pre></div>
+<div class="warning"><pre class="knitr r">## Warning in is.na(data): is.na() applied to non-(list or vector) of type
+## 'closure'
+</pre></div>
+<div class="source"><pre class="knitr r"><span class="hl std">missingVals</span>
+</pre></div>
+<div class="output"><pre class="knitr r">## [1] 0
+</pre></div>
+</div></div>
+
+
+<p>2.Devise a strategy for filling in all of the missing values in the dataset. The strategy does not need to be sophisticated. For example, you could use the mean/median for that day, or the mean for that 5-minute interval, etc.
+I will use the mean for that 5 -minute interval to replace all the missing values in the dataset. At the end, I will check if all the NAs have been replaced</p>
+
+
+<div class="chunk" id="unnamed-chunk-7"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl kwd">library</span><span class="hl std">(magrittr)</span>
+<span class="hl kwd">library</span><span class="hl std">(dplyr)</span>
+
+<span class="hl std">replacewithmean</span> <span class="hl kwb">&lt;-</span> <span class="hl kwa">function</span><span class="hl std">(</span><span class="hl kwc">x</span><span class="hl std">)</span> <span class="hl kwd">replace</span><span class="hl std">(x,</span> <span class="hl kwd">is.na</span><span class="hl std">(x),</span> <span class="hl kwd">mean</span><span class="hl std">(x,</span> <span class="hl kwc">na.rm</span> <span class="hl std">=</span> <span class="hl num">TRUE</span><span class="hl std">))</span>
+<span class="hl std">meandata</span> <span class="hl kwb">&lt;-</span> <span class="hl std">stepdata</span><span class="hl opt">%&gt;%</span> <span class="hl kwd">group_by</span><span class="hl std">(interval)</span> <span class="hl opt">%&gt;%</span> <span class="hl kwd">mutate</span><span class="hl std">(</span><span class="hl kwc">steps</span><span class="hl std">=</span> <span class="hl kwd">replacewithmean</span><span class="hl std">(steps))</span>
+<span class="hl kwd">head</span><span class="hl std">(meandata)</span>
+</pre></div>
+<div class="output"><pre class="knitr r">## # A tibble: 6 x 3
+## # Groups:   interval [6]
+##    steps date       interval
+##    &lt;dbl&gt; &lt;chr&gt;         &lt;int&gt;
+## 1 1.72   2012-10-01        0
+## 2 0.340  2012-10-01        5
+## 3 0.132  2012-10-01       10
+## 4 0.151  2012-10-01       15
+## 5 0.0755 2012-10-01       20
+## 6 2.09   2012-10-01       25
+</pre></div>
+</div></div>
+
+
+<p>4 Make a histogram of the total number of steps taken each day and Calculate and report the mean and median total number of steps taken per day.</p>
+
+<div class="chunk" id="unnamed-chunk-8"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl std">FullSummedDataByDay</span> <span class="hl kwb">&lt;-</span> <span class="hl kwd">aggregate</span><span class="hl std">(meandata</span><span class="hl opt">$</span><span class="hl std">steps,</span> <span class="hl kwc">by</span><span class="hl std">=</span><span class="hl kwd">list</span><span class="hl std">(meandata</span><span class="hl opt">$</span><span class="hl std">date), sum)</span>
+
+<span class="hl kwd">names</span><span class="hl std">(FullSummedDataByDay)[</span><span class="hl num">1</span><span class="hl std">]</span> <span class="hl kwb">=</span><span class="hl str">&quot;date&quot;</span>
+<span class="hl kwd">names</span><span class="hl std">(FullSummedDataByDay)[</span><span class="hl num">2</span><span class="hl std">]</span> <span class="hl kwb">=</span><span class="hl str">&quot;totalsteps&quot;</span>
+<span class="hl kwd">head</span><span class="hl std">(FullSummedDataByDay,</span><span class="hl num">15</span><span class="hl std">)</span>
+</pre></div>
+<div class="output"><pre class="knitr r">##          date totalsteps
+## 1  2012-10-01   10766.19
+## 2  2012-10-02     126.00
+## 3  2012-10-03   11352.00
+## 4  2012-10-04   12116.00
+## 5  2012-10-05   13294.00
+## 6  2012-10-06   15420.00
+## 7  2012-10-07   11015.00
+## 8  2012-10-08   10766.19
+## 9  2012-10-09   12811.00
+## 10 2012-10-10    9900.00
+## 11 2012-10-11   10304.00
+## 12 2012-10-12   17382.00
+## 13 2012-10-13   12426.00
+## 14 2012-10-14   15098.00
+## 15 2012-10-15   10139.00
+</pre></div>
+</div></div>
+
+
+<p>Summary of new data : mean & median</p>
+<div class="chunk" id="unnamed-chunk-9"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl kwd">summary</span><span class="hl std">(FullSummedDataByDay)</span>
+</pre></div>
+<div class="output"><pre class="knitr r">##      date             totalsteps   
+##  Length:61          Min.   :   41  
+##  Class :character   1st Qu.: 9819  
+##  Mode  :character   Median :10766  
+##                     Mean   :10766  
+##                     3rd Qu.:12811  
+##                     Max.   :21194
+</pre></div>
+</div></div>
+
+
+<p>4C Compare the mean and median of Old and New data</p>
+<div class="chunk" id="unnamed-chunk-10"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl std">oldmean</span> <span class="hl kwb">&lt;-</span> <span class="hl kwd">mean</span><span class="hl std">(databydate</span><span class="hl opt">$</span><span class="hl std">tsteps,</span> <span class="hl kwc">na.rm</span> <span class="hl std">=</span> <span class="hl num">TRUE</span><span class="hl std">)</span>
+<span class="hl std">newmean</span> <span class="hl kwb">&lt;-</span> <span class="hl kwd">mean</span><span class="hl std">(FullSummedDataByDay</span><span class="hl opt">$</span><span class="hl std">totalsteps)</span>
+<span class="hl com"># Old mean and New mean</span>
+<span class="hl std">oldmean</span>
+</pre></div>
+<div class="output"><pre class="knitr r">## [1] 10766.19
+</pre></div>
+<div class="source"><pre class="knitr r"><span class="hl std">newmean</span>
+</pre></div>
+<div class="output"><pre class="knitr r">## [1] 10766.19
+</pre></div>
+<div class="source"><pre class="knitr r"><span class="hl std">oldmedian</span> <span class="hl kwb">&lt;-</span> <span class="hl kwd">median</span><span class="hl std">(databydate</span><span class="hl opt">$</span><span class="hl std">tsteps,</span> <span class="hl kwc">na.rm</span> <span class="hl std">=</span> <span class="hl num">TRUE</span><span class="hl std">)</span>
+<span class="hl std">newmedian</span> <span class="hl kwb">&lt;-</span> <span class="hl kwd">median</span><span class="hl std">(FullSummedDataByDay</span><span class="hl opt">$</span><span class="hl std">totalsteps)</span>
+<span class="hl com"># Old median and New median</span>
+<span class="hl std">oldmedian</span>
+</pre></div>
+<div class="output"><pre class="knitr r">## [1] 10765
+</pre></div>
+<div class="source"><pre class="knitr r"><span class="hl std">newmedian</span>
+</pre></div>
+<div class="output"><pre class="knitr r">## [1] 10766.19
+</pre></div>
+</div></div>
+
+<p>Are there differences in activity patterns between weekdays and weekends?</p>
+<div class="chunk" id="unnamed-chunk-11"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl std">meandata</span><span class="hl opt">$</span><span class="hl std">date</span> <span class="hl kwb">&lt;-</span> <span class="hl kwd">as.Date</span><span class="hl std">(meandata</span><span class="hl opt">$</span><span class="hl std">date)</span>
+<span class="hl std">meandata</span><span class="hl opt">$</span><span class="hl std">weekday</span> <span class="hl kwb">&lt;-</span> <span class="hl kwd">weekdays</span><span class="hl std">(meandata</span><span class="hl opt">$</span><span class="hl std">date)</span>
+<span class="hl std">meandata</span><span class="hl opt">$</span><span class="hl std">weekend</span> <span class="hl kwb">&lt;-</span> <span class="hl kwd">ifelse</span><span class="hl std">(meandata</span><span class="hl opt">$</span><span class="hl std">weekday</span><span class="hl opt">==</span><span class="hl str">&quot;Saturday&quot;</span> <span class="hl opt">|</span> <span class="hl std">meandata</span><span class="hl opt">$</span><span class="hl std">weekday</span><span class="hl opt">==</span><span class="hl str">&quot;Sunday&quot;</span><span class="hl std">,</span> <span class="hl str">&quot;Weekend&quot;</span><span class="hl std">,</span> <span class="hl str">&quot;Weekday&quot;</span> <span class="hl std">)</span>
+<span class="hl kwd">library</span><span class="hl std">(ggplot2)</span>
+<span class="hl std">meandataweekendweekday</span> <span class="hl kwb">&lt;-</span> <span class="hl kwd">aggregate</span><span class="hl std">(meandata</span><span class="hl opt">$</span><span class="hl std">steps ,</span> <span class="hl kwc">by</span><span class="hl std">=</span> <span class="hl kwd">list</span><span class="hl std">(meandata</span><span class="hl opt">$</span><span class="hl std">weekend, meandata</span><span class="hl opt">$</span><span class="hl std">interval),</span> <span class="hl kwd">na.omit</span><span class="hl std">(mean))</span>
+<span class="hl kwd">names</span><span class="hl std">(meandataweekendweekday)</span> <span class="hl kwb">&lt;-</span> <span class="hl kwd">c</span><span class="hl std">(</span><span class="hl str">&quot;weekend&quot;</span><span class="hl std">,</span> <span class="hl str">&quot;interval&quot;</span><span class="hl std">,</span> <span class="hl str">&quot;steps&quot;</span><span class="hl std">)</span>
+
+<span class="hl kwd">ggplot</span><span class="hl std">(meandataweekendweekday,</span> <span class="hl kwd">aes</span><span class="hl std">(</span><span class="hl kwc">x</span><span class="hl std">=interval,</span> <span class="hl kwc">y</span><span class="hl std">=steps,</span> <span class="hl kwc">color</span><span class="hl std">=weekend))</span> <span class="hl opt">+</span> <span class="hl kwd">geom_line</span><span class="hl std">()</span><span class="hl opt">+</span>
+<span class="hl kwd">facet_grid</span><span class="hl std">(weekend</span> <span class="hl opt">~</span><span class="hl std">.)</span> <span class="hl opt">+</span> <span class="hl kwd">xlab</span><span class="hl std">(</span><span class="hl str">&quot;Interval&quot;</span><span class="hl std">)</span> <span class="hl opt">+</span> <span class="hl kwd">ylab</span><span class="hl std">(</span><span class="hl str">&quot;Mean of Steps&quot;</span><span class="hl std">)</span> <span class="hl opt">+</span>
+    <span class="hl kwd">ggtitle</span><span class="hl std">(</span><span class="hl str">&quot;Comparison of Average Number of Steps in Each Interval&quot;</span><span class="hl std">)</span>
+</pre></div>
+</div><div class="rimage default"><img src="figure/unnamed-chunk-11-1.png" title="plot of chunk unnamed-chunk-11" alt="plot of chunk unnamed-chunk-11" class="plot" /></div></div>
+
